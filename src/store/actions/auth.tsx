@@ -8,9 +8,29 @@ import {
     setLoginSuccess, setProfileLoading,
     setRegistrationLoading,
     setRegistrationSuccess,
-    setUserData
+    setUserData, setVerificationSuccess, setVerificationToken
 } from "@/store/reducers/auth";
 import {clearCampaigns} from "@/store/reducers/campaigns";
+
+
+export const activateAccount = (dispatch: Dispatch, token: string) => {
+    dispatch(setProfileLoading(true));
+    axios
+        .get(`http://127.0.0.1:8000/api/activate/${token}`)
+        .then((response) => {
+            dispatch(setVerificationSuccess(true));
+            dispatch(setProfileLoading(false));
+            toast.success(response.data.message);
+            return response;
+        })
+        .catch((error) => {
+            dispatch(setVerificationSuccess(false));
+            dispatch(setProfileLoading(false));
+            toast.error(error.response.data.message);
+            return error;
+        });
+}
+
 
 export const RegisterUser = async (dispatch: Dispatch, payload: UserFormData) => {
     dispatch(setRegistrationLoading(true));
@@ -20,6 +40,7 @@ export const RegisterUser = async (dispatch: Dispatch, payload: UserFormData) =>
             dispatch(setRegistrationLoading(false));
             toast.success( "User created successfully" );
             dispatch(setRegistrationSuccess(true));
+            dispatch(setVerificationToken(response.data.activation_token))
             return response;
         })
         .catch((error) => {

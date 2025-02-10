@@ -10,6 +10,8 @@ export interface authProps {
     loginSuccess: boolean;
     user: IUser | null;
     profileLoading: boolean;
+    verificationToken: string;
+    verificationSuccess: boolean;
 }
 const initialState: authProps = {
     loginLoading: false,
@@ -18,12 +20,20 @@ const initialState: authProps = {
     loginSuccess: false,
     user: null,
     profileLoading: false,
+    verificationToken: '',
+    verificationSuccess: false
 };
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
+        setVerificationSuccess:(state, action:PayloadAction<boolean>) =>{
+            state.verificationSuccess = action.payload;
+        },
+        setVerificationToken:(state, action: PayloadAction<string>) => {
+            state.verificationToken = action.payload;
+        },
         setProfileLoading:(state, action:PayloadAction<boolean>) =>{
             state.profileLoading = action.payload;
         },
@@ -53,6 +63,8 @@ const authSlice = createSlice({
 
 export const {
     setLoginSuccess,
+    setVerificationSuccess,
+    setVerificationToken,
     setLoginLoading,
     setRegistrationLoading,
     setRegistrationSuccess,

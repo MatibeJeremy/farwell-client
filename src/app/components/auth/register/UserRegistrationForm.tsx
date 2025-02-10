@@ -67,7 +67,7 @@ export const UserRegistrationForm = () => {
 
     useEffect(() => {
         if(registrationSuccess){
-            router.push('/auth/login');
+            router.push('/auth/verify');
             setFormData({
                 name: "",
                 email: "",
