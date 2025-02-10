@@ -9,6 +9,7 @@ export interface authProps {
     registrationSuccess: boolean;
     loginSuccess: boolean;
     user: IUser | null;
+    profileLoading: boolean;
 }
 const initialState: authProps = {
     loginLoading: false,
@@ -16,12 +17,16 @@ const initialState: authProps = {
     registrationSuccess: false,
     loginSuccess: false,
     user: null,
+    profileLoading: false,
 };
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
+        setProfileLoading:(state, action:PayloadAction<boolean>) =>{
+            state.profileLoading = action.payload;
+        },
         setUserData: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload;
         },
@@ -52,7 +57,8 @@ export const {
     setRegistrationLoading,
     setRegistrationSuccess,
     setUserData,
-    clearAuth
+    clearAuth,
+    setProfileLoading
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -18,17 +18,20 @@ import {
 } from "@mui/material"
 import { Alert } from "@mui/material"
 import AvatarUpload from "./avatar-upload"
-import {useAppSelector} from "@/store";
+import {useAppDispatch, useAppSelector} from "@/store";
+import {updatePassword, updatePasswordAction, updateProfileAction} from "@/store/actions/auth";
 
 export function ProfilePage() {
     const user = useAppSelector(
         state => state.auth.user
     );
     const router = useRouter()
-
     const [loading, setLoading] = useState(true)
     const [username, setUsername] = useState<string | null>(null)
-    const [website, setWebsite] = useState<string | null>(null)
+    const [currentPassword, setCurrentPassword] = useState<string | null>(null)
+    const [newPassword, setNewPassword] = useState<string | null>(null)
+    const [newPasswordConfirmation, setNewPasswordConfirmation] = useState<string | null>(null)
+    const [email, setEmail] = useState<string | null>(null)
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
     const [tabValue, setTabValue] = useState(0)
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" }>({
@@ -36,6 +39,7 @@ export function ProfilePage() {
         message: "",
         severity: "success",
     })
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         getProfile()
@@ -53,29 +57,19 @@ export function ProfilePage() {
         }
     }
 
-    async function updateProfile({
-                                     username,
-                                     website,
-                                     avatar_url,
-                                 }: {
-        username: string | null
-        website: string | null
-        avatar_url: string | null
-    }) {
+     const updateProfile = async (
+                                     username: string,
+                                     email: string) => {
         try {
             setLoading(true)
             if (!user) throw new Error("No user")
+            console.log(username,email);
 
-            const updates = {
-                // id: user.id,
-                username,
-                avatar_url,
-                updated_at: new Date().toISOString(),
+            const payload = {
+                email : email || user.email,
+                name: username || user.name
             }
-
-            // const { error } = await supabase.from("profiles").upsert(updates)
-            // if (error) throw error
-            showSnackbar("Profile updated successfully", "success")
+            updateProfileAction(dispatch, payload);
         } catch (error) {
             showSnackbar("Error updating the data!", "error")
         } finally {
@@ -83,12 +77,16 @@ export function ProfilePage() {
         }
     }
 
-    async function updatePassword(newPassword: string) {
+    async function updatePassword() {
         try {
             setLoading(true)
-            // const { error } = await supabase.auth.updateUser({ password: newPassword })
-            // if (error) throw error
-            showSnackbar("Password updated successfully", "success")
+            // showSnackbar("Password updated successfully", "success")
+            const payload = {
+                    current_password: currentPassword,
+                    new_password:newPassword,
+                    new_password_confirmation: newPasswordConfirmation
+            }
+            updatePasswordAction(dispatch, payload);
         } catch (error) {
             showSnackbar("Error updating password", "error")
         } finally {
@@ -126,7 +124,7 @@ export function ProfilePage() {
                             <form
                                 onSubmit={(e) => {
                                     e.preventDefault()
-                                    updateProfile({ username, website, avatar_url: avatarUrl })
+                                    updateProfile(username, email);
                                 }}
                             >
                                 <Grid container spacing={2}>
@@ -134,8 +132,16 @@ export function ProfilePage() {
                                         <TextField
                                             fullWidth
                                             label="Username"
-                                            value={username || user?.name}
+                                            value={username == "" ? user?.name: username}
                                             onChange={(e) => setUsername(e.target.value)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Email"
+                                            value={email == "" ?  user?.email : email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -153,30 +159,57 @@ export function ProfilePage() {
                                 size={150}
                                 onUpload={(url) => {
                                     setAvatarUrl(url)
-                                    updateProfile({ username, website, avatar_url: url })
+                                    // updateProfile({ username,avatar_url: url })
                                 }}/>
                         )}
                         {tabValue === 2 && (
-                            <form
-                                onSubmit={(e) => {
-                                    e.preventDefault()
-                                    const form = e.target as HTMLFormElement
-                                    const newPassword = form.newPassword.value
-                                    updatePassword(newPassword)
-                                    form.reset()
-                                }}
-                            >
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <TextField fullWidth label="New Password" type="password" id="newPassword" required />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Button type="submit" variant="contained" disabled={loading}>
-                                            {loading ? "Updating ..." : "Update password"}
-                                        </Button>
-                                    </Grid>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        fullWidth
+                                        label="Current Password"
+                                        type="password"
+                                        id="current_password"
+                                        required
+                                    />
                                 </Grid>
-                            </form>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        fullWidth
+                                        label="New Password"
+                                        type="password"
+                                        id="new_password"
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        value={newPasswordConfirmation}
+                                        onChange={(e) => setNewPasswordConfirmation(e.target.value)}
+                                        fullWidth
+                                        label="New Password Confirmation"
+                                        type="password"
+                                        id="new_password_confirmation"
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        disabled={loading}
+                                        onClick={() => {
+                                            updatePassword();
+                                        }}
+                                    >
+                                        {loading ? "Updating ..." : "Update password"}
+                                    </Button>
+                                </Grid>
+                            </Grid>
                         )}
                     </Box>
                 </CardContent>
