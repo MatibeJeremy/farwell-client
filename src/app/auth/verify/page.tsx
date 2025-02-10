@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useEffect} from "react"
-import { Box, Container, Typography, TextField, Button, Paper, CircularProgress, Snackbar, Alert } from "@mui/material"
+import { Box, Container, Typography, TextField, Button, Paper, CircularProgress } from "@mui/material"
 import { styled } from "@mui/system"
 import {useAppDispatch, useAppSelector} from "@/store";
 import {activateAccount} from "@/store/actions/auth";
@@ -21,10 +21,7 @@ export default function AccountVerification() {
         state => state.auth.profileLoading
     );
     const router = useRouter();
-    const dispatch = useAppDispatch()
-    const verification = useAppSelector(
-        state => state.auth.verificationSuccess
-    );
+    const dispatch = useAppDispatch();
     const token = useAppSelector(
         state => state.auth.verificationToken
     );
@@ -36,7 +33,7 @@ export default function AccountVerification() {
 
     useEffect(() => {
         dispatch(setRegistrationSuccess(false));
-    }, []);
+    }, [dispatch]);
 
 
     return (

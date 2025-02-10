@@ -14,8 +14,6 @@ import {Google, LinkedIn} from "@mui/icons-material";
 import {RegisterUser} from "@/store/actions/auth";
 import {useRouter} from "next/navigation";
 import {UserFormData} from "@/app/components/interfaces";
-import {toast} from "react-toastify";
-import {setRegistrationLoading} from "@/store/reducers/auth";
 
 export const UserRegistrationForm = () => {
     const dispatch = useAppDispatch();

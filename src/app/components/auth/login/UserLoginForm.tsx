@@ -60,11 +60,11 @@ export const UserLoginForm = () => {
     if (loginSuccess) {
       router.push('/dashboard');
     }
-  }, [loginSuccess]);
+  }, [loginSuccess,router,dispatch]);
 
   useEffect(() => {
     dispatch(setLoginLoading(false));
-  }, []);
+  }, [dispatch]);
 
   return (
     <Container

@@ -30,13 +30,8 @@ export default function AvatarUpload({
         if (url) downloadImage(url)
     }, [url])
 
-    async function downloadImage(path: string) {
+    async function downloadImage(url: string) {
         try {
-            // const { data, error } = await supabase.storage.from("avatars").download(path)
-            // if (error) {
-            //     throw error
-            // }
-            // const url = URL.createObjectURL(data)
             setAvatarUrl(url)
         } catch (error) {
             console.log("Error downloading image: ", error)
@@ -52,16 +47,11 @@ export default function AvatarUpload({
                 const fileName = `${uid}.${fileExt}`
                 const filePath = `${fileName}`
 
-                // const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file, { upsert: true })
-
-                // if (uploadError) {
-                //     throw uploadError
-                // }
-
                 onUpload(filePath)
                 showSnackbar("Avatar updated successfully", "success")
             } catch (error) {
                 showSnackbar("Error uploading avatar", "error")
+                console.log(error);
             } finally {
                 setUploading(false)
             }

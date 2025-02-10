@@ -1,4 +1,4 @@
-import {Container, Stack} from "@mui/material";
+import {Container} from "@mui/material";
 import {UserRegistrationForm} from "@/app/components/auth/register/UserRegistrationForm";
 import {ToastContainer} from "react-toastify";
 

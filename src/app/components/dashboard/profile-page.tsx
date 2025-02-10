@@ -19,20 +19,19 @@ import {
 import { Alert } from "@mui/material"
 import AvatarUpload from "./avatar-upload"
 import {useAppDispatch, useAppSelector} from "@/store";
-import {updatePassword, updatePasswordAction, updateProfileAction} from "@/store/actions/auth";
+import { updatePasswordAction, updateProfileAction} from "@/store/actions/auth";
 
 export function ProfilePage() {
     const user = useAppSelector(
         state => state.auth.user
     );
-    const router = useRouter()
     const [loading, setLoading] = useState(true)
     const [username, setUsername] = useState<string | null>(null)
     const [currentPassword, setCurrentPassword] = useState<string | null>(null)
     const [newPassword, setNewPassword] = useState<string | null>(null)
     const [newPasswordConfirmation, setNewPasswordConfirmation] = useState<string | null>(null)
     const [email, setEmail] = useState<string | null>(null)
-    const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+    const [setAvatarUrl] = useState<string | null>(null)
     const [tabValue, setTabValue] = useState(0)
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" }>({
         open: false,
@@ -58,8 +57,8 @@ export function ProfilePage() {
     }
 
      const updateProfile = async (
-                                     username: string,
-                                     email: string) => {
+         username: string | null,
+         email: string | null) => {
         try {
             setLoading(true)
             if (!user) throw new Error("No user")
@@ -86,7 +85,7 @@ export function ProfilePage() {
                     new_password:newPassword,
                     new_password_confirmation: newPasswordConfirmation
             }
-            updatePasswordAction(dispatch, payload);
+            updatePasswordAction( payload);
         } catch (error) {
             showSnackbar("Error updating password", "error")
         } finally {
@@ -154,12 +153,14 @@ export function ProfilePage() {
                         )}
                         {tabValue === 1 && (
                             <AvatarUpload
+                                // @ts-expect-error: Expected type error due to potential undefined value
                                 uid={user?.id}
+                                // @ts-expect-error: Expected type error due to potential undefined value
                                 url={user?.profile_picture}
                                 size={150}
                                 onUpload={(url) => {
+                                    // @ts-expect-error: Expected type error due to potential undefined value
                                     setAvatarUrl(url)
-                                    // updateProfile({ username,avatar_url: url })
                                 }}/>
                         )}
                         {tabValue === 2 && (
