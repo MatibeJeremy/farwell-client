@@ -1,0 +1,7 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="60" rx="10" fill="#222831"/>
+    <text x="20" y="35" font-family="monospace" font-size="18" fill="#00FF7F">❯ aomatibe</text>
+    <circle cx="10" cy="10" r="5" fill="red"/>
+    <circle cx="25" cy="10" r="5" fill="yellow"/>
+    <circle cx="40" cy="10" r="5" fill="green"/>
+</svg>
